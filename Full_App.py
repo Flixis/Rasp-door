@@ -12,6 +12,7 @@ db = mysql.connector.connect(
     database="attendancesystem",
 )
 
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(18, GPIO.OUT)
 cursor = db.cursor()
 reader = SimpleMFRC522()
