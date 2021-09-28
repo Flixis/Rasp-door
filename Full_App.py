@@ -12,7 +12,7 @@ db = mysql.connector.connect(
     database="attendancesystem",
 )
 
-
+GPIO.setup(18, GPIO.OUT)
 cursor = db.cursor()
 reader = SimpleMFRC522()
 
@@ -27,9 +27,12 @@ try:
       print("User scanned with id: "+str(id))
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
+      GPIO.output(18, GPIO.HIGH)
+      time.sleep(3)
+      GPIO.output(18, GPIO.LOW)
     else:
-        print("Unkown user:"+str(id))
-        time.sleep(2)
+        print("Unkown user: "+str(id))
+        time.sleep(1)
 except KeyboardInterrupt:
     print("stopping")
     GPIO.cleanup()
