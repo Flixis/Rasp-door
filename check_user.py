@@ -21,7 +21,7 @@ try:
     cursor.execute("Select id, name FROM users WHERE rfid_uid="+str(id))
     result = cursor.fetchone()
     if cursor.rowcount >= 1:
-
+      print("added attendance")
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
     else:
