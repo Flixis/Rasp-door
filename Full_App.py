@@ -24,11 +24,11 @@ try:
     cursor.execute("Select id, name FROM users WHERE rfid_uid="+str(id))
     result = cursor.fetchone()
     if cursor.rowcount >= 1:
-      print("User scanned with id: " + id)
+      print("User scanned with id: "+str(id))
       cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],) )
       db.commit()
     else:
-        print("Unkown user:" + id)
+        print("Unkown user:"+str(id))
         time.sleep(2)
 except KeyboardInterrupt:
     print("stopping")
