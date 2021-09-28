@@ -31,5 +31,8 @@ try:
     else:
         print("Unkown user:" + id)
         time.sleep(2)
+except KeyboardInterrupt:
+    print("stopping")
+    GPIO.cleanup()
 finally:
   GPIO.cleanup()
