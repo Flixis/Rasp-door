@@ -16,7 +16,6 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 reader = SimpleMFRC522()
 
-terminal_input = input()
 try:
   while True:
 
