@@ -16,7 +16,6 @@ db = mysql.connector.connect(
 cursor = db.cursor()
 reader = SimpleMFRC522()
 
-
 terminal_input = input()
 while terminal_input != "new_user":
     try:
@@ -27,35 +26,33 @@ while terminal_input != "new_user":
             cursor.execute("Select id, name FROM users WHERE rfid_uid=" + str(id))
             result = cursor.fetchone()
             if cursor.rowcount >= 1:
-                print("added attendance")
-                cursor.execute(
-                    "INSERT INTO attendance (user_id) VALUES (%s)", (result[0],)
-                )
+                print("Someone clocked in")
+                cursor.execute("INSERT INTO attendance (user_id) VALUES (%s)", (result[0],))
                 db.commit()
             else:
                 time.sleep(2)
-    finally:
-        GPIO.cleanup()
+            if terminal_input == "new_user":
+                try:
+                    while True:
+                        id, text = reader.read()
 
-if terminal_input == "new user":
-    try:
-        while True:
-            id, text = reader.read()
-
-            if cursor.rowcount >= 1:
-                overwrite = input("Overwite (Y/N)? ")
-                if overwrite[0] == "Y" or overwrite[0] == "y":
-                    time.sleep(1)
-                    sql_insert = "UPDATE users SET name = %s WHERE rfid_uid=%s"
-                else:
+                        if cursor.rowcount >= 1:
+                            overwrite = input("Overwite (Y/N)? ")
+                            if overwrite[0] == "Y" or overwrite[0] == "y":
+                                time.sleep(1)
+                                sql_insert = "UPDATE users SET name = %s WHERE rfid_uid=%s"
+                                break
+                            else:
+                                continue
+                        else:
+                            sql_insert = "INSERT INTO users (name, rfid_uid) VALUES (%s, %s)"
+                            new_name = input("Name: ")
+                            cursor.execute(sql_insert, (new_name, id))
+                            print("added new user: " + new_name)
+                            db.commit()
+                            time.sleep(2)
+                            break
+                except:
                     continue
-            else:
-                sql_insert = "INSERT INTO users (name, rfid_uid) VALUES (%s, %s)"
-                new_name = input("Name: ")
-
-                cursor.execute(sql_insert, (new_name, id))
-
-                db.commit()
-                time.sleep(2)
     finally:
         GPIO.cleanup()
